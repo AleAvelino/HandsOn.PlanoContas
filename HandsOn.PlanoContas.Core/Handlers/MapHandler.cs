@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 using HandsOn.PlanoContas.Core.DTOs;
 using HandsOn.PlanoContas.Core.Entities;
 using HandsOn.PlanoContas.Core.Enums;
@@ -26,7 +20,7 @@ namespace HandsOn.PlanoContas.Core.Handlers
             );
         }
 
-        internal static ChartAccount GetChartAccount(ChartAccountDTO dto)
+        internal static ChartAccount GetChartAccount(int clientId, ChartAccountDTO dto)
         {
             bool accept = GetBoolByString(dto.AceitaLancamento);
 
@@ -35,7 +29,8 @@ namespace HandsOn.PlanoContas.Core.Handlers
                 dto.Nome, 
                 accept,
                 GetTypeByName(dto.Tipo), 
-                dto.ContaPai);            
+                dto.ContaPai,
+                clientId);            
         }
 
         internal static bool GetBoolByString(string value)

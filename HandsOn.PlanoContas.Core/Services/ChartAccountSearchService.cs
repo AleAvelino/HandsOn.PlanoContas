@@ -18,15 +18,15 @@ namespace HandsOn.PlanoContas.Core.Services
         }
 
 
-        public Task<IEnumerable<ChartAccount>> GetAllPlansAsync()
+
+        public Task<IEnumerable<ChartAccount>> GetAllPlansAsync(int clientId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<ChartAccount>> GetFilterPlansAsync(Func<ChartAccount, ChartAccount, bool> func)
+        public Task<IEnumerable<ChartAccount>> GetFilterPlansAsync(int clientId, Func<int, bool, ChartAccount> func)
         {
             throw new NotImplementedException();
         }
-
     }
 }

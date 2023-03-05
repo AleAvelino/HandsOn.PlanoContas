@@ -4,10 +4,9 @@ namespace HandsOn.PlanoContas.Core.Interfaces
 {
     public interface IChartAccountRepository
     {
-        Task<IEnumerable<ChartAccount>> GetAll();
-        Task<IEnumerable<ChartAccount>> GetItemByCode(string code);
-
-        Task<IEnumerable<ChartAccount>> GetParentList(string code);
+        Task<IEnumerable<ChartAccount>> GetAll(int clientId);
+        Task<IEnumerable<ChartAccount>> GetItemByCode(int clientId, string code);
+        Task<IEnumerable<ChartAccount>> GetParentList(int clientId, string code);
 
     }
 }

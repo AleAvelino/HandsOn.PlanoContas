@@ -1,4 +1,5 @@
 ﻿using HandsOn.PlanoContas.Core.Enums;
+using HandsOn.PlanoContas.Core.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace HandsOn.PlanoContas.Core.DTOs
 {
-    public class ChartAccountDTO
+    public class ChartAccountDTO : IBaseDomain
     {
 
         public string ContaPai { get; set; }

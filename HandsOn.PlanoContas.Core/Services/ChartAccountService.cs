@@ -16,19 +16,25 @@ namespace HandsOn.PlanoContas.Core.Services
     {
         private readonly IChartAccountCommandService _commandService;
         private readonly IChartAccountSearchService _searchService;
+        private readonly int _clientId;
 
         public ChartAccountService(
+            int clientId,
             IChartAccountRepository repository
             )
         {
-            _commandService = new ChartAccountCommandService(repository);
+            _clientId = clientId;
+            _commandService = new ChartAccountCommandService(_clientId, 
+                repository, 
+                new ValidatorCommandService());
+
             _searchService = new ChartAccountSearchService(repository); 
         }
 
 
         public Task<OperationResultDTO> AddPlanAsync(ChartAccountDTO chartAccountDTO)
         {
-            var item = MapHandler.GetChartAccount(chartAccountDTO);
+            var item = MapHandler.GetChartAccount(_clientId, chartAccountDTO);
             return _commandService.AddPlanAsync(item);
         }
 
@@ -53,16 +59,19 @@ namespace HandsOn.PlanoContas.Core.Services
         private async Task<IEnumerable<ChartAccountDTO>> GetItemsAsync()
         {
             var items = await _searchService
-                .GetAllPlansAsync();
+                .GetAllPlansAsync(_clientId);
             return items
                 .Select(i => MapHandler.GetDTO(i))
                 .ToList();
                 
         }
 
-        public Task<IEnumerable<ChartAccountDTO>> GetItemsFilterAsync(Func<ChartAccountDTO, ChartAccountDTO> func)
+        public async Task<IEnumerable<ChartAccountDTO>> GetItemsFilterAsync(Func<int, bool, ChartAccount> func)
         {
-            throw new NotImplementedException();
+            var lst = await _searchService.GetFilterPlansAsync(_clientId, func);
+            return lst
+                .Select(x => MapHandler.GetDTO(x))
+                .ToList();
         }
 
 

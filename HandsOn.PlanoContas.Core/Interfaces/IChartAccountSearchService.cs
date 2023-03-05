@@ -5,8 +5,8 @@ namespace HandsOn.PlanoContas.Core.Interfaces
 {
     internal interface IChartAccountSearchService
     {
-        Task<IEnumerable<ChartAccount>> GetAllPlansAsync();
-        Task<IEnumerable<ChartAccount>> GetFilterPlansAsync(Func<ChartAccount, ChartAccount, bool> func);
+        Task<IEnumerable<ChartAccount>> GetAllPlansAsync(int clientId);
+        Task<IEnumerable<ChartAccount>> GetFilterPlansAsync(int clientId, Func<int, bool, ChartAccount> func);
 
 
     }

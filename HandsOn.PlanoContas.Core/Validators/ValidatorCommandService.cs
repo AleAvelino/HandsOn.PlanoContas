@@ -1,7 +1,7 @@
 ﻿using HandsOn.PlanoContas.Core.Entities;
 using HandsOn.PlanoContas.Core.Interfaces;
 
-namespace HandsOn.PlanoContas.Core.Services
+namespace HandsOn.PlanoContas.Core.Validators
 {
     public class ValidatorCommandService : IValidatorCommand
     {
@@ -9,7 +9,7 @@ namespace HandsOn.PlanoContas.Core.Services
 
         public ValidatorCommandService()
         {
-            _items = new List<ChartAccount>();  
+            _items = new List<ChartAccount>();
         }
         public ValidatorCommandService(IEnumerable<ChartAccount> items)
         {
@@ -24,10 +24,10 @@ namespace HandsOn.PlanoContas.Core.Services
 
         public bool CreateItemValidation(ChartAccount item)
         {
-            return (ParentCanHaveChildren(item)
-                && !CodeAlreadyExists(item) 
+            return ParentCanHaveChildren(item)
+                && !CodeAlreadyExists(item)
                 && ChildrenMustBeSameParentType(item)
-                && CodeCanBeGreaterThanNext(item));
+                && CodeCanBeGreaterThanNext(item);
         }
 
 
@@ -36,20 +36,20 @@ namespace HandsOn.PlanoContas.Core.Services
         public bool ParentCanHaveChildren(ChartAccount item)
         {
             var parent = _items.FirstOrDefault(x => x.Code == item.ParentAccount);
-            return (parent == null || parent.Code == item.Code) || !parent.AcceptInclusion;
+            return parent == null || parent.Code == item.Code || !parent.AcceptInclusion;
         }
 
         /* ● Os códigos não podem se repetir; */
         public bool CodeAlreadyExists(ChartAccount item)
         {
-            return _items.Any(x => x.Code == item.Code);    
+            return _items.Any(x => x.Code == item.Code);
         }
 
         /* ● As contas devem obrigatoriamente ser do mesmo tipo do seu pai (quando este existir); */
         public bool ChildrenMustBeSameParentType(ChartAccount item)
         {
             var parent = _items.FirstOrDefault(x => x.Code == item.ParentAccount);
-            return (parent == null || parent.Code == item.Code)
+            return parent == null || parent.Code == item.Code
                 || parent.Type == item.Type;
         }
 
@@ -60,8 +60,8 @@ namespace HandsOn.PlanoContas.Core.Services
                 .Where(x => x.ParentAccount == item.ParentAccount)
                 .OrderByDescending(o => o.Code)
                 .ToList();
-            return (sisters == null)
-                || (Math.Abs(String.Compare(item.Code, sisters.Max(x => x.Code), comparisonType: StringComparison.OrdinalIgnoreCase)) > 0);                
+            return sisters == null
+                || Math.Abs(string.Compare(item.Code, sisters.Max(x => x.Code), comparisonType: StringComparison.OrdinalIgnoreCase)) > 0;
         }
 
 

@@ -6,29 +6,28 @@ using System.Threading.Tasks;
 
 using HandsOn.PlanoContas.Core.Interfaces;
 using HandsOn.PlanoContas.Core.DTOs;
+using HandsOn.PlanoContas.Core.Handlers;
 
 namespace HandsOn.PlanoContas.Core.Services
 {
     public class NextCodeService : INextCodeService
     {
         private readonly IChartAccountSearchService _searchService;
-        private readonly IValidatorNextCode _validator;
-        private readonly int _clientId;
-
-        public NextCodeService(
-            int clientId,
-            IChartAccountRepository repository
-            )
+        
+        public NextCodeService(IChartAccountRepository repository)
         {
-            _clientId = clientId;
             _searchService = new ChartAccountSearchService(repository);
-            _validator = new ValidatorNextCodeService(); 
         }
 
 
 
-        public Task<NextCodeResponseDTO> GetNextCode(string parentCode)
+        public async Task<NextCodeResponseDTO> GetNextCode(int clientId, string parentCode)
         {
+            var lst = await _searchService.GetAllPlansAsync(clientId);
+            NextCodeGeneratorHandler _generatorHandler = new(lst);
+
+
+
             throw new NotImplementedException();
         }
 

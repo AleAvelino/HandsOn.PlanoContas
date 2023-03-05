@@ -1,8 +1,7 @@
 ﻿using HandsOn.PlanoContas.Core.DTOs;
 using HandsOn.PlanoContas.Core.Entities;
 using HandsOn.PlanoContas.Core.Interfaces;
-using HandsOn.PlanoContas.Core.Services;
-
+using HandsOn.PlanoContas.Core.Validators;
 
 namespace HandsOn.PlanoContas.UnitTests.Core.Services
 {

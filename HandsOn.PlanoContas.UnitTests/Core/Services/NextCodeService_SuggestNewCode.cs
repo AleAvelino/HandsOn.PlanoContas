@@ -5,19 +5,19 @@ using System.Text;
 using System.Threading.Tasks;
 
 using HandsOn.PlanoContas.Core.Entities;
-using HandsOn.PlanoContas.Core.Services;
+using HandsOn.PlanoContas.Core.Handlers;
 
 namespace HandsOn.PlanoContas.UnitTests.Core.Services
 {
     public class NextCodeService_SuggestNewCode
     {
         private readonly FakeDomainMockList _mockList;
-        private readonly NextCodeGeneratorService _generator;
+        private readonly NextCodeGeneratorHandler _generator;
 
         public NextCodeService_SuggestNewCode()
         {
             _mockList = new FakeDomainMockList();
-            _generator = new NextCodeGeneratorService(_mockList);
+            _generator = new NextCodeGeneratorHandler(_mockList);
         }
 
 

@@ -21,12 +21,12 @@ namespace HandsOn.PlanoContas.Core.Entities
         public bool AcceptInclusion { get; set; }
 
         [Required]
-        public EPlanType Type { get; set; }
+        public EPlanType Type { get; set; } = EPlanType.Unknown;
 
         [Required]
         public int ClientId { get; set; }
 
-        public string ParentAccount { get; set; }
+        public string ParentAccount { get; set; } = string.Empty;
 
         public ChartAccount(int id, string code, string name, bool acceptInclusion, EPlanType type, string parent, int clientId)
         {

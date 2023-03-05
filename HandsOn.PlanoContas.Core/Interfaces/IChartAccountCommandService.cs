@@ -5,7 +5,7 @@ namespace HandsOn.PlanoContas.Core.Interfaces
 {
     public interface IChartAccountCommandService
     {
-        Task<OperationResultDTO> AddPlanAsync(ChartAccount planoContaDTO);
-        Task<OperationResultDTO> RemovePlanAsync(string code);
+        Task<OperationResultDTO> AddPlanAsync(int clientId, ChartAccount planoContaDTO);
+        Task<OperationResultDTO> RemovePlanAsync(int clientId, string code);
     }
 }

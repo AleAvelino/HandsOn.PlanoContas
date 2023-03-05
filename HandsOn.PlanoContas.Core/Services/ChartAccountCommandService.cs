@@ -14,42 +14,40 @@ namespace HandsOn.PlanoContas.Core.Services
 
         private readonly IChartAccountRepository _repository;
         private readonly IValidatorCommand _validator;
-        private readonly int _clientId;
-        public ChartAccountCommandService(int clientId,
+        public ChartAccountCommandService(
             IChartAccountRepository repository, 
             IValidatorCommand validator)
         {
-            _clientId = clientId;
             _repository = repository;
             _validator = validator;
         }
 
-        public async Task<OperationResultDTO> AddPlanAsync(ChartAccount item)
+        public async Task<OperationResultDTO> AddPlanAsync(int clientId, ChartAccount item)
         {
-            await ValidateItemToAdd(item);
+            ValidateItemToAdd(clientId, item);
 
             throw new NotImplementedException();
         }
 
-        public async Task<OperationResultDTO> RemovePlanAsync(string code)
+        public async Task<OperationResultDTO> RemovePlanAsync(int clientId, string code)
         {
-            await ValidateItemToRemove(code);
+            ValidateItemToRemove(clientId, code);
 
             throw new NotImplementedException();
         }
 
-        private async Task<bool> ValidateItemToAdd(ChartAccount item)
+        private bool ValidateItemToAdd(int clientId, ChartAccount item)
         {
-            var lst = await _repository.GetAll(_clientId);
+            var lst = _repository.GetAll(clientId);
             _validator.SetItems(lst);
             return _validator.CreateItemValidation(item);
         }
 
-        private async Task<bool> ValidateItemToRemove(string code)
+        private bool ValidateItemToRemove(int clientId, string code)
         {
-            var lst = await _repository.GetAll(_clientId);
+            var lst = _repository.GetAll(clientId);
             _validator.SetItems(lst);
-            return _validator.DeleteItemValidation(_clientId, code);
+            return _validator.DeleteItemValidation(clientId, code);
         }
 
 

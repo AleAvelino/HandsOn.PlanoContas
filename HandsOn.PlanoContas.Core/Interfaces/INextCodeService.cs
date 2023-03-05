@@ -8,8 +8,8 @@ using HandsOn.PlanoContas.Core.DTOs;
 
 namespace HandsOn.PlanoContas.Core.Interfaces
 {
-    internal interface INextCodeService
+    public interface INextCodeService
     {
-        Task<NextCodeResponseDTO> GetNextCode(string parentCode);
+        Task<NextCodeResponseDTO> GetNextCode(int clientId, string parentCode);
     }
 }

@@ -8,6 +8,7 @@ using HandsOn.PlanoContas.Core.Entities;
 using HandsOn.PlanoContas.Core.DTOs;
 using HandsOn.PlanoContas.Core.Handlers;
 using HandsOn.PlanoContas.Core.Interfaces;
+using HandsOn.PlanoContas.Core.Validators;
 
 
 namespace HandsOn.PlanoContas.Core.Services
@@ -16,15 +17,12 @@ namespace HandsOn.PlanoContas.Core.Services
     {
         private readonly IChartAccountCommandService _commandService;
         private readonly IChartAccountSearchService _searchService;
-        private readonly int _clientId;
 
         public ChartAccountService(
-            int clientId,
             IChartAccountRepository repository
             )
         {
-            _clientId = clientId;
-            _commandService = new ChartAccountCommandService(_clientId, 
+            _commandService = new ChartAccountCommandService(
                 repository, 
                 new ValidatorCommandService());
 
@@ -32,18 +30,18 @@ namespace HandsOn.PlanoContas.Core.Services
         }
 
 
-        public Task<OperationResultDTO> AddPlanAsync(ChartAccountDTO chartAccountDTO)
+        public Task<OperationResultDTO> AddPlanAsync(int clientId, ChartAccountDTO chartAccountDTO)
         {
-            var item = MapHandler.GetChartAccount(_clientId, chartAccountDTO);
-            return _commandService.AddPlanAsync(item);
+            var item = MapHandler.GetChartAccount(clientId, chartAccountDTO);
+            return _commandService.AddPlanAsync(clientId, item);
         }
 
-        public Task<OperationResultDTO> RemovePlanAsync(string code)
+        public Task<OperationResultDTO> RemovePlanAsync(int clientId, string code)
         {
             // Validate Operation
 
 
-            return _commandService.RemovePlanAsync(code);
+            return _commandService.RemovePlanAsync(clientId, code);
         }
 
         public void ValidateItem(ChartAccountDTO item)
@@ -56,19 +54,19 @@ namespace HandsOn.PlanoContas.Core.Services
         }
 
 
-        public async Task<IEnumerable<ChartAccountDTO>> GetItemsAsync()
+        public async Task<IEnumerable<ChartAccountDTO>> GetItemsAsync(int clientId)
         {
             var items = await _searchService
-                .GetAllPlansAsync(_clientId);
+                .GetAllPlansAsync(clientId);
             return items
                 .Select(i => MapHandler.GetDTO(i))
                 .ToList();
                 
         }
 
-        public async Task<IEnumerable<ChartAccountDTO>> GetItemsFilterAsync(Func<ChartAccount, bool> func)
+        public async Task<IEnumerable<ChartAccountDTO>> GetItemsFilterAsync(int clientId, Func<ChartAccount, bool> func)
         {
-            var lst = await _searchService.GetFilterPlansAsync(_clientId, func);
+            var lst = await _searchService.GetFilterPlansAsync(clientId, func);
             return lst
                 .Select(x => MapHandler.GetDTO(x))
                 .ToList();

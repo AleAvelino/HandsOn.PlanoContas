@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HandsOn.PlanoContas.Core\HandsOn.PlanoContas.Core.csproj" />
+    <ProjectReference Include="..\HandsOn.PlanoContas.Infraestructure.Auth\HandsOn.PlanoContas.Infrastructure.Auth.csproj" />
   </ItemGroup>
 
 </Project>

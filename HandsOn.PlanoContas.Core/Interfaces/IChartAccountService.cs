@@ -10,8 +10,6 @@ namespace HandsOn.PlanoContas.Core.Interfaces
 {
     public interface IChartAccountService
     {
-
-
         void ValidateItem(ChartAccountDTO item);
     }
 }

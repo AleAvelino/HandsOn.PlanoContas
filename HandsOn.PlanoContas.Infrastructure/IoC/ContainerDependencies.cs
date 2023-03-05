@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 
 using HandsOn.PlanoContas.Core.Interfaces;
 using HandsOn.PlanoContas.Core.Services;
+using HandsOn.PlanoContas.Infrastructure.Auth.Authorization;
 using HandsOn.PlanoContas.Infrastructure.Data.Contexts;
 using HandsOn.PlanoContas.Infrastructure.Data.Repositories;
 
@@ -26,7 +27,7 @@ namespace HandsOn.PlanoContas.Infrastructure.IoC
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(
-                    configuration.GetConnectionString("DefaultConnection"));
+                    configuration.GetConnectionString("ChartAccountConnection"));
             });
 
             services.AddScoped<IChartAccountRepository, ChartAccountRepository>();
@@ -34,6 +35,7 @@ namespace HandsOn.PlanoContas.Infrastructure.IoC
             services.AddScoped<IChartAccountService, ChartAccountService>();
             services.AddScoped<INextCodeService, NextCodeService>();
 
+            services.AddScoped<IAuthorizationService, AuthorizationService>();
 
 
         }

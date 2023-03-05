@@ -6,17 +6,21 @@ namespace HandsOn.PlanoContas.Infrastructure.Data.Contexts
 {
     public class ApplicationDbContext : DbContext
     {
-        protected readonly IConfiguration Configuration;
-        public ApplicationDbContext(IConfiguration configuration)
+        //protected readonly IConfiguration Configuration;
+        //public ApplicationDbContext(IConfiguration configuration)
+        //{
+        //    Configuration = configuration;
+        //}
+
+        public ApplicationDbContext(DbContextOptions options) : base(options)
         {
-            Configuration = configuration;
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-        {
-            // connect to sql server with connection string from app settings
-            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-        }
+        //protected override void OnConfiguring(DbContextOptionsBuilder options)
+        //{
+        //    // connect to sql server with connection string from app settings
+        //    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+        //}
 
         public DbSet<ChartAccount> ChartAccounts { get; set; }
 

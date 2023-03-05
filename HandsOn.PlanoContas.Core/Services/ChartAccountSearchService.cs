@@ -21,7 +21,7 @@ namespace HandsOn.PlanoContas.Core.Services
 
         public async Task<IEnumerable<ChartAccount>> GetAllPlansAsync(int clientId)
         {
-            return await _repository.GetAll(clientId);
+            return await Task.FromResult(_repository.GetAll(clientId));
         }
 
         public Task<IEnumerable<ChartAccount>> GetFilterPlansAsync(int clientId, Func<ChartAccount, bool> func)

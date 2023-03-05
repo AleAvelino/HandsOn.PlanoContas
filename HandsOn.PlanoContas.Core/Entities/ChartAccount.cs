@@ -28,6 +28,11 @@ namespace HandsOn.PlanoContas.Core.Entities
 
         public string ParentAccount { get; set; } = string.Empty;
 
+        public ChartAccount()
+        {
+
+        }
+
         public ChartAccount(int id, string code, string name, bool acceptInclusion, EPlanType type, string parent, int clientId)
         {
             Id = id;

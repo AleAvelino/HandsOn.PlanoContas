@@ -17,5 +17,17 @@ namespace HandsOn.PlanoContas.Api.Controllers
         }
 
 
+        protected string GetQueryValue(string name)
+        {
+            string ret = "";
+            if (Request.Query.Keys.Contains(name))
+            {
+                Request.Query.TryGetValue(name, out var key);
+                ret = string.IsNullOrEmpty(key) ? "" : key;
+            }
+            return ret;
+        }
+
+
     }
 }

@@ -27,7 +27,7 @@ namespace HandsOn.PlanoContas.Infrastructure.IoC
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(
-                    configuration.GetConnectionString("ChartAccountConnection"));
+                    configuration.GetConnectionString("DefaultConnection"));
             });
 
             services.AddScoped<IChartAccountRepository, ChartAccountRepository>();

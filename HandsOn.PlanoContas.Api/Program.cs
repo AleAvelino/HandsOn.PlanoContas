@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using HandsOn.PlanoContas.Api;
 using HandsOn.PlanoContas.Infrastructure.Data.Contexts;
 using HandsOn.PlanoContas.Infrastructure.IoC;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,8 +51,8 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
-        //context.Database.Migrate();
         context.Database.EnsureCreated();
+        context.Database.Migrate();
         SeedData.Initialize(services);
     }
     catch (Exception ex)

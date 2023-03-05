@@ -26,26 +26,26 @@ namespace HandsOn.PlanoContas.Core.Entities
         [Required]
         public int ClientId { get; set; }
 
-        public string FatherAccount { get; set; }
+        public string ParentAccount { get; set; }
 
-        public ChartAccount(int id, string code, string name, bool acceptInclusion, EPlanType type, string father, int clientId)
+        public ChartAccount(int id, string code, string name, bool acceptInclusion, EPlanType type, string parent, int clientId)
         {
             Id = id;
             Code = code;
             Name = name;
             AcceptInclusion = acceptInclusion;
             Type = type;
-            FatherAccount = father ?? code;
+            ParentAccount = parent ?? code;
             ClientId = clientId;
         }
-        public ChartAccount(int id, string code, string name, int type, string acceptInclusion, string father,int clientId = 0)
+        public ChartAccount(int id, string code, string name, int type, string acceptInclusion, string parent, int clientId = 0)
         {
             Id = id;
             Code = code.Trim();
             Name = name.Trim();
             AcceptInclusion = (acceptInclusion.Trim() == "Sim");
             Type = (EPlanType)type;
-            FatherAccount = father.Trim() ?? code.Trim();
+            ParentAccount = parent.Trim() ?? code.Trim();
             ClientId = clientId;
         }
 

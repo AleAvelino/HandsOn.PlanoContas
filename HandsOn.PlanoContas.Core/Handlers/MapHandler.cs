@@ -12,7 +12,7 @@ namespace HandsOn.PlanoContas.Core.Handlers
         internal static ChartAccountDTO GetDTO(ChartAccount chartAccount)
         {
             return new ChartAccountDTO(
-                chartAccount.FatherAccount,
+                chartAccount.ParentAccount,
                 chartAccount.Code,
                 chartAccount.Name,
                 (chartAccount.AcceptInclusion) ? "Sim" : "Não",

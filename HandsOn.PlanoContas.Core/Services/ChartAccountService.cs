@@ -56,7 +56,7 @@ namespace HandsOn.PlanoContas.Core.Services
         }
 
 
-        private async Task<IEnumerable<ChartAccountDTO>> GetItemsAsync()
+        public async Task<IEnumerable<ChartAccountDTO>> GetItemsAsync()
         {
             var items = await _searchService
                 .GetAllPlansAsync(_clientId);
@@ -66,7 +66,7 @@ namespace HandsOn.PlanoContas.Core.Services
                 
         }
 
-        public async Task<IEnumerable<ChartAccountDTO>> GetItemsFilterAsync(Func<int, bool, ChartAccount> func)
+        public async Task<IEnumerable<ChartAccountDTO>> GetItemsFilterAsync(Func<ChartAccount, bool> func)
         {
             var lst = await _searchService.GetFilterPlansAsync(_clientId, func);
             return lst

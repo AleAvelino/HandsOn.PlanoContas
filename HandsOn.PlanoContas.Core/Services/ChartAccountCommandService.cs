@@ -24,13 +24,17 @@ namespace HandsOn.PlanoContas.Core.Services
             _validator = validator;
         }
 
-        public Task<OperationResultDTO> AddPlanAsync(ChartAccount item)
+        public async Task<OperationResultDTO> AddPlanAsync(ChartAccount item)
         {
+            await ValidateItemToAdd(item);
+
             throw new NotImplementedException();
         }
 
-        public Task<OperationResultDTO> RemovePlanAsync(string code)
+        public async Task<OperationResultDTO> RemovePlanAsync(string code)
         {
+            await ValidateItemToRemove(code);
+
             throw new NotImplementedException();
         }
 

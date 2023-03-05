@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace HandsOn.PlanoContas.Core.DTOs
 {
-    public class ChartAccountDTO : IBaseDomain
+    public class ChartAccountDTO
     {
 
         public string ContaPai { get; set; }

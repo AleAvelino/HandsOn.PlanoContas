@@ -21,8 +21,8 @@ Projeto laboratório, contruído como desafio de habilidades
 
 ## Requisitos para execução do projeto
 
-.NET 6
-SQL Server (ou LocalDB)
+* .NET 6
+* SQL Server (ou LocalDB)
 
 ## Instruções para executar o projeto
 

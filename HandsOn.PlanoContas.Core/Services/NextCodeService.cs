@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using HandsOn.PlanoContas.Core.Interfaces;
+﻿using HandsOn.PlanoContas.Core.Interfaces;
 using HandsOn.PlanoContas.Core.DTOs;
 using HandsOn.PlanoContas.Core.Handlers;
 
@@ -20,20 +14,15 @@ namespace HandsOn.PlanoContas.Core.Services
         }
 
 
-
         public async Task<NextCodeResponseDTO> GetNextCode(int clientId, string parentCode)
         {
             var lst = await _searchService.GetAllPlansAsync(clientId);
-            NextCodeGeneratorHandler _generatorHandler = new(lst);
+            NextCodeGeneratorHandler generator = new(lst);
 
+            var newCode = generator.Generate(parentCode);
+            return newCode;
 
-
-            throw new NotImplementedException();
         }
-
-
-
-
 
 
 

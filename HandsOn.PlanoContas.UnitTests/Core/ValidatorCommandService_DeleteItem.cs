@@ -3,7 +3,7 @@ using HandsOn.PlanoContas.Core.Entities;
 using HandsOn.PlanoContas.Core.Interfaces;
 using HandsOn.PlanoContas.Core.Validators;
 
-namespace HandsOn.PlanoContas.UnitTests.Core.Services
+namespace HandsOn.PlanoContas.UnitTests.Core
 {
     public class ValidatorCommandService_DeleteItem
     {

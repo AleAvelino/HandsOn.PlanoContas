@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using HandsOn.PlanoContas.Core.Entities;
 using HandsOn.PlanoContas.Core.Handlers;
 
-namespace HandsOn.PlanoContas.UnitTests.Core.Services
+namespace HandsOn.PlanoContas.UnitTests.Core
 {
     public class NextCodeService_SuggestNewCode
     {
@@ -27,24 +27,15 @@ namespace HandsOn.PlanoContas.UnitTests.Core.Services
             for a “2.2.7”. (Sempre use a lógica do maior + 1);
         */
         [Theory]
-        [InlineData("2","2.5")]
-        [InlineData("2.3","2.3.4")]
+        [InlineData("2", "2.5")]
+        [InlineData("2.3", "2.3.4")]
         [InlineData("4", "4.3")]
+        [InlineData("2.1", "2.1.16")]
+        [InlineData("3", "3.5")]
         public void NextCodePlus_SimpleValues_ReturnCodeExpected(string value, string expected)
         {
             string result = _generator.NextCodePlus(value);
-            Assert.Equal(result,expected);
-        }
-        [Theory]
-        [InlineData("2.999", "2.1000")]
-        [InlineData("3", "3.4")]
-        [InlineData("4.2", "4.3")]
-        public void NextCodePlus_ComplexValues_ReturnFalse(string value, string expected)
-        {
-            var code = _generator.NextCodePlus(value);
-            bool result = (code == expected);
-
-            Assert.False(result, $"O Código {value} retornou {code} e não {expected}");
+            Assert.Equal(result, expected);
         }
 
 
@@ -70,7 +61,6 @@ namespace HandsOn.PlanoContas.UnitTests.Core.Services
         }
 
 
-
         /*
             ● Se a conta “1.2.999” já existe e a API foi chamada para sugerir o 
                 próximo código para o pai “1.2”ela deve: 
@@ -86,32 +76,48 @@ namespace HandsOn.PlanoContas.UnitTests.Core.Services
                     9.9.999.999.999 Conta Y
                     9.10 Conta Z
         */
+
         [Theory]
-        [InlineData("2.999", "2", "2.5")]
-        [InlineData("9.9.999.999.999", "9.9.999.999", "9.11")]
-        [InlineData("9.9.999.999.1000", "9.9.999.999", "9.11")]
-        public void IsNeededToUpLevel_ComplexValues_ReturnEqual(string value, string parent, string expected)
+        [InlineData("2.1000", 0)]
+        [InlineData("3.323.3333", 1)]
+        [InlineData("4.3.1099.998", 1)]
+        [InlineData("4.3999.999.999.999", 0)]
+        public void HasToUpgradeLevel_InvalidValues_ReturnEqual(string value, int expectedPosition)
+        {
+            var result = _generator.HasToUpgradeLevel(value);
+            Assert.Equal(result, expectedPosition);
+        }
+
+        [Theory]
+        [InlineData("2.999", "2.5")]
+        [InlineData("9.9.999.999.999", "9.11")]
+        [InlineData("9.9.999.999.1000", "9.11")]
+        public void GetHigherlevel_ComplexValues_ReturnEqual(string value, string expected)
         {
             _mockList.Add(new ChartAccount(101, "9.9.999.999.998", "Teste de Nivel 9...998", true, PlanoContas.Core.Enums.EPlanType.Expense, "9.9.999.999", 0));
             _mockList.Add(new ChartAccount(102, "9.9.999.999.999", "Teste de Nivel 9...999", true, PlanoContas.Core.Enums.EPlanType.Expense, "9.9.999.999", 0));
             _mockList.Add(new ChartAccount(103, "9.10", "Teste de Nivel 9.10", true, PlanoContas.Core.Enums.EPlanType.Expense, "9", 0));
+            _generator.Items = _mockList;
 
-            string result = _generator.IsNeededToUpLevel(parent, value);
+            string result = _generator.GetHigherlevel(value);
             Assert.Equal(result, expected);
 
         }
         [Theory]
-        [InlineData("4.1", "4", "4.1")]
-        [InlineData("9.9.999.999.998", "9.9.999.999", "9.9.999.999.998")]
-        public void IsNeededToUpLevel_WrongValues_ReturnFalse(string value, string parent, string expected)
+        [InlineData("4.2.999", "4.2.999")]
+        [InlineData("9.9.999.999.998", "9.13")]
+        public void GetHigherlevel_WrongValues_ReturnTrue(string value, string expected)
         {
+            _mockList.Add(new ChartAccount(103, "4.2.998", "Teste de Nivel 4", true, PlanoContas.Core.Enums.EPlanType.Revenue, "4", 0));
             _mockList.Add(new ChartAccount(101, "9.9.999.999.998", "Teste de Nivel 9...998", true, PlanoContas.Core.Enums.EPlanType.Expense, "9.9.999.999", 0));
             _mockList.Add(new ChartAccount(102, "9.9.999.999.999", "Teste de Nivel 9...999", true, PlanoContas.Core.Enums.EPlanType.Expense, "9.9.999.999", 0));
             _mockList.Add(new ChartAccount(103, "9.10", "Teste de Nivel 9.10", true, PlanoContas.Core.Enums.EPlanType.Expense, "9", 0));
+            _mockList.Add(new ChartAccount(103, "9.12", "Teste de Nivel 9.10", true, PlanoContas.Core.Enums.EPlanType.Expense, "9", 0));
+            _generator.Items = _mockList;
 
-            string suggested = _generator.IsNeededToUpLevel(parent, value);
-            bool result = suggested == expected;    
-            Assert.False(result, $"O Código {value} retornou {suggested} e não {expected}");
+            string suggested = _generator.GetHigherlevel(value);
+            bool result = suggested == expected;
+            Assert.True(result, $"O Código {value} retornou {suggested} e não {expected}");
         }
 
     }

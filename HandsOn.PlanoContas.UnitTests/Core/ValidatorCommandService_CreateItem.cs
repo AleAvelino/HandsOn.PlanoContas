@@ -1,8 +1,7 @@
-﻿
-using HandsOn.PlanoContas.Core.Entities;
+﻿using HandsOn.PlanoContas.Core.Entities;
 using HandsOn.PlanoContas.Core.Validators;
 
-namespace HandsOn.PlanoContas.UnitTests.Core.Services
+namespace HandsOn.PlanoContas.UnitTests.Core
 {
     public class ValidatorCommandService_CreateItem
     {
@@ -12,7 +11,7 @@ namespace HandsOn.PlanoContas.UnitTests.Core.Services
         public ValidatorCommandService_CreateItem()
         {
             _mockList = new FakeDomainMockList();
-            _validatorCommandService = new ValidatorCommandService(_mockList);   
+            _validatorCommandService = new ValidatorCommandService(_mockList);
         }
 
 

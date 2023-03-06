@@ -6,11 +6,15 @@ namespace HandsOn.PlanoContas.Core.Handlers
     public class NextCodeGeneratorHandler
     {
 
-        private readonly List<ChartAccount> _items;
+        public List<ChartAccount> Items;
 
+        public NextCodeGeneratorHandler()
+        {
+            Items = new();
+        }
         public NextCodeGeneratorHandler(IEnumerable<ChartAccount> items)
         {
-            _items = new(items);
+            Items = new(items);
         }
 
 
@@ -48,22 +52,45 @@ namespace HandsOn.PlanoContas.Core.Handlers
             }
             else
             {
-                string step3 = HasToUpgradeLevel(parent);
-                response = Generate(step3);
+                int step3 = HasToUpgradeLevel(parent);
+                //response = Generate(step3);
             }
             return response;
         }
 
+        private ChartAccount GetItem(string code)
+        {
+            return Items
+                .First(x => x.Code == code);
+        }
 
         private List<ChartAccount> GetItemsbyParent(string parent)
         {
-            return _items
+            return Items
                 .Where(x => x.ParentAccount == parent)
                 .ToList();
         }
         private bool CodeExists(string code)
         {
-            return _items.Any(x => x.Code == code);
+            return Items.Any(x => x.Code == code);
+        }
+
+        private string GetLastCodeByParent(string code, bool calcParent = false)
+        {
+            string parent = calcParent ? CalculateParent(code) : code;
+            var parentsLst = GetItemsbyParent(parent);
+            var tmp = parentsLst
+                .Select(x => new { x.Code, Order = int.Parse(x.Code.Replace(".", "")) })
+                .ToArray();          
+            var max = tmp.Max(m => m.Order);
+            return tmp.First(x => x.Order == max).Code;
+        }
+
+        private string CalculateParent(string code)
+        {
+            return code.Contains('.')                
+                ? code.TrimEnd('.').Remove(code.LastIndexOf('.'))
+                : code;
         }
 
 
@@ -76,12 +103,6 @@ namespace HandsOn.PlanoContas.Core.Handlers
                 intLevels[i] = int.Parse(strLevels[i]);
             return intLevels;
         }
-        private static int GetLastLevelInteger(string code)
-        {
-            int[] levels = GetLevelsParseInt(code);
-            return levels[^1];
-        }
-
 
         /*
 
@@ -108,11 +129,14 @@ namespace HandsOn.PlanoContas.Core.Handlers
             “2.2”, a API deve sugerir o código “2.2.8” se a maior filha já cadastrada 
             for a “2.2.7”. (Sempre use a lógica do maior + 1);
          */
-        public string NextCodePlus(string code)
+        public string NextCodePlus(string code, bool calcParent = false)
         {
-            int last = GetLastLevelInteger(code);
-            int next = last++;
-            return next.ToString();
+            string max = GetLastCodeByParent(code, calcParent);
+            int[] levels = GetLevelsParseInt(max);
+            int last = levels[^1];
+            last++;
+            levels[^1] = last;
+            return String.Join(".",levels);
         }
 
 
@@ -122,56 +146,64 @@ namespace HandsOn.PlanoContas.Core.Handlers
         private const int MAX_VALUE = 999;
         public bool IsValidMaxCode(string code)
         {
-            int last = GetLastLevelInteger(code);
-            return last <= MAX_VALUE;
+            int[] levels = GetLevelsParseInt(code);
+            for (int i = 0; i < levels.Length; i++)
+            {
+                if (levels[i] > MAX_VALUE)
+                    return false;
+            }
+            return true;
         }
 
         /* 
          
          */
-        public string HasToUpgradeLevel(string code)
-        {
-            throw new NotImplementedException();
+        public int HasToUpgradeLevel(string code)
+        {            
+            int[] levels = GetLevelsParseInt(code);
+            int resp = levels.Length-1;
+
+            for (int i = levels.Length-1; i >= 0; i--)
+            {
+                if (levels[i] >= MAX_VALUE)
+                    resp = (resp >= i)
+                        ? (i > 0) ? i-1 : 0
+                        : resp;
+            }
+
+            return resp;            
         }
 
         /// <summary>
-        /// This is a recursive routine to suggest the next valid code
+        /// This is a recursive routine to suggest the next valid code, always going up one level to the highest.
         /// In cases where code already exists or maxes out, this routine needs to find the next available higher level.
         /// </summary>
         /// <param name="parent">Parent level </param>
         /// <param name="code"></param>
         /// <returns></returns>
-        public string IsNeededToUpLevel(string parent, string code)
+        public string GetHigherlevel(string code)
         {
-            /*
-             * O codigo não será valido
-             * Verificar os niveis do pai
-             * tentar subir para o proximo
-             * se ja tiver, sugerir o próximo nivel mais alto
-             */
-            string suggested = code;
-            List<ChartAccount> lst;
-            if (IsValidMaxCode(code) && !CodeExists(code))
+
+            int destLevel = HasToUpgradeLevel(code);
+            int[] levels = GetLevelsParseInt(code);
+            string nextLevel = $"{levels[0]}";
+
+            for (int i = 0; i < destLevel; i++)
             {
-                lst = GetItemsbyParent(parent);
+                nextLevel = string.Concat(nextLevel, ".", levels[i]);
+            }
+            string nextCode = NextCodePlus(nextLevel,true);  
 
-                return code;
-
+            if (IsValidMaxCode(nextCode))
+            {
+                return  CodeExists(nextCode) ? NextCodePlus(GetItem(nextCode).ParentAccount, true) : nextCode;
             }
             else
             {
-                var levels = GetLevelsParseInt(code);
-                int last = levels[^1];
-                for (int i = levels.Length; i > 0; i--)
-                {
-
-                }
-
+                string suggest = GetHigherlevel(NextCodePlus(nextCode, true));
+                return suggest;
             }
 
-
-
-            return suggested;
         }
 
 

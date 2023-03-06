@@ -23,10 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Core\Handlers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\HandsOn.PlanoContas.Core\HandsOn.PlanoContas.Core.csproj" />
     <ProjectReference Include="..\HandsOn.PlanoContas.Infrastructure\HandsOn.PlanoContas.Infrastructure.csproj" />
   </ItemGroup>

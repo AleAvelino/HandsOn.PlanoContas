@@ -6,9 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 ContainerDependencies.RegisterServices(builder.Services, builder.Configuration);
-
 
 builder.Services.AddApiVersioning(opt =>
 {
@@ -21,10 +19,9 @@ builder.Services.AddApiVersioning(opt =>
 });
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
-SwaggerConfigure.Configure(builder.Services, builder.Configuration);
+SwaggerConfigure.Configure(builder.Services);
 
 var app = builder.Build();
 

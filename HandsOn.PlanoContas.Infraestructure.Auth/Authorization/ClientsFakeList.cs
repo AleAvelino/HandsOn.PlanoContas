@@ -8,7 +8,7 @@ namespace HandsOn.PlanoContas.Infrastructure.Auth.Authorization;
 
 internal class ClientsFakeList
 {
-    private readonly List<Client> _clients = new List<Client>();
+    private readonly List<Client> _clients = new();
     public ClientsFakeList()
     {
         _clients = new List<Client>()

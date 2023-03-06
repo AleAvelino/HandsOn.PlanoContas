@@ -5,7 +5,7 @@ namespace HandsOn.PlanoContas.Api;
 public static class SwaggerConfigure
 {
 
-    public static void Configure(IServiceCollection services, IConfiguration configuration)
+    public static void Configure(IServiceCollection services)
     {
 
 

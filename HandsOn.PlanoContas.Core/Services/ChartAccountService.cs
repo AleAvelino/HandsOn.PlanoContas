@@ -30,29 +30,30 @@ namespace HandsOn.PlanoContas.Core.Services
         }
 
 
-        public Task<OperationResultDTO> AddPlanAsync(int clientId, ChartAccountDTO chartAccountDTO)
+        public async Task<OperationResultDTO> AddPlanAsync(int clientId, ChartAccountDTO chartAccountDTO)
         {
+            ValidateItem(chartAccountDTO);
             var item = MapHandler.GetChartAccount(clientId, chartAccountDTO);
-            return _commandService.AddPlanAsync(clientId, item);
+            return await Task.FromResult(_commandService.AddPlanAsync(clientId, item));
         }
 
-        public Task<OperationResultDTO> RemovePlanAsync(int clientId, string code)
+        public async Task<OperationResultDTO> RemovePlanAsync(int clientId, string code)
         {
-            // Validate Operation
-
-
-            return _commandService.RemovePlanAsync(clientId, code);
+            return await Task.FromResult(_commandService.RemovePlanAsync(clientId, code));
         }
 
         public void ValidateItem(ChartAccountDTO item)
         {
-            throw new NotImplementedException();
-        }
-        public void ValidateItemToRemove(ChartAccountDTO dto, ChartAccount chartAccount)
-        {
-            throw new NotImplementedException();
-        }
+            if (item == null)
+                throw new Exception("Item deve ser preenchido");
+            if (item.Codigo.Trim().Length < 1)
+                throw new Exception("Item deve ter código");
+            if (String.IsNullOrEmpty(item.Nome))
+                throw new Exception("Item deve ter nome");
+            if (String.IsNullOrEmpty(item.Tipo))
+                throw new Exception("Item deve possuir um tipo");
 
+        }
 
         public async Task<IEnumerable<ChartAccountDTO>> GetItemsAsync(int clientId)
         {
@@ -64,17 +65,22 @@ namespace HandsOn.PlanoContas.Core.Services
                 
         }
 
-        public async Task<IEnumerable<ChartAccountDTO>> GetItemsFilterAsync(int clientId, Func<ChartAccount, bool> func)
+        public async Task<IEnumerable<ChartAccountDTO>> GetItemsbyNameAsync(int clientId, string name)
         {
-            var lst = await _searchService.GetFilterPlansAsync(clientId, func);
+            var lst = await _searchService.GetItemsbyNameAsync(clientId, name);
             return lst
                 .Select(x => MapHandler.GetDTO(x))
                 .ToList();
         }
 
+        public async Task<ChartAccountDTO> GetItembyCodeAsync(int clientId, string code)
+        {
+            var item = await _searchService.GetFilterbyCodeAsync(clientId, code);
+            return MapHandler.GetDTO(item);
+        }
 
 
-  
+
 
 
 

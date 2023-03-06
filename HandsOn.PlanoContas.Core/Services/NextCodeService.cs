@@ -21,10 +21,7 @@ namespace HandsOn.PlanoContas.Core.Services
 
             var newCode = generator.Generate(parentCode);
             return newCode;
-
         }
-
-
 
     }
 }

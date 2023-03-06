@@ -47,7 +47,7 @@ namespace HandsOn.PlanoContas.UnitTests.Core
         [InlineData("4.3")]
         public void IsValidMaxCode_ValidValues_ReturnTrue(string value)
         {
-            var result = _generator.IsValidMaxCode(value);
+            var result = NextCodeGeneratorHandler.IsValidMaxCode(value);
             Assert.True(result, $"O código {value} é valido");
         }
         [Theory]
@@ -56,7 +56,7 @@ namespace HandsOn.PlanoContas.UnitTests.Core
         [InlineData("4.3.1099.998")]
         public void IsValidMaxCode_InvalidValues_ReturnFalse(string value)
         {
-            var result = _generator.IsValidMaxCode(value);
+            var result = NextCodeGeneratorHandler.IsValidMaxCode(value);
             Assert.False(result, $"O Código {value} não é válido");
         }
 
@@ -84,7 +84,7 @@ namespace HandsOn.PlanoContas.UnitTests.Core
         [InlineData("4.3999.999.999.999", 0)]
         public void HasToUpgradeLevel_InvalidValues_ReturnEqual(string value, int expectedPosition)
         {
-            var result = _generator.HasToUpgradeLevel(value);
+            var result = NextCodeGeneratorHandler.HasToUpgradeLevel(value);
             Assert.Equal(result, expectedPosition);
         }
 

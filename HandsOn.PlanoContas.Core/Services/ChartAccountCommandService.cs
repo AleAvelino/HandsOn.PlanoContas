@@ -12,6 +12,10 @@ namespace HandsOn.PlanoContas.Core.Services
     internal class ChartAccountCommandService : IChartAccountCommandService
     {
 
+        private const string MSG_FAIL = "O Plano não pode ser criado, Por favor verifique os dados e tente novamente";
+        private const string MSG_SUCCESS = "Dados Salvos com sucesso!";
+
+
         private readonly IChartAccountRepository _repository;
         private readonly IValidatorCommand _validator;
         public ChartAccountCommandService(
@@ -22,18 +26,36 @@ namespace HandsOn.PlanoContas.Core.Services
             _validator = validator;
         }
 
-        public async Task<OperationResultDTO> AddPlanAsync(int clientId, ChartAccount item)
+        public OperationResultDTO AddPlanAsync(int clientId, ChartAccount item)
         {
-            ValidateItemToAdd(clientId, item);
 
-            throw new NotImplementedException();
+            OperationResultDTO operationResult;
+
+            if (ValidateItemToAdd(clientId, item))
+            {
+               _repository.Create(clientId, item);
+                operationResult = new(false, MSG_SUCCESS);
+            }
+            else
+            {
+                operationResult = new(false, MSG_FAIL);
+            }
+            return operationResult;
         }
 
-        public async Task<OperationResultDTO> RemovePlanAsync(int clientId, string code)
+        public OperationResultDTO RemovePlanAsync(int clientId, string code)
         {
-            ValidateItemToRemove(clientId, code);
-
-            throw new NotImplementedException();
+            OperationResultDTO operationResult;
+            if (ValidateItemToRemove(clientId, code))
+            {
+                _repository.Delete(clientId, code);
+                operationResult = new(false, MSG_SUCCESS);
+            }
+            else
+            {
+                operationResult = new(false, MSG_FAIL);
+            }
+            return operationResult;
         }
 
         private bool ValidateItemToAdd(int clientId, ChartAccount item)

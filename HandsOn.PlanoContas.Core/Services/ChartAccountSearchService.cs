@@ -24,9 +24,14 @@ namespace HandsOn.PlanoContas.Core.Services
             return await Task.FromResult(_repository.GetAll(clientId));
         }
 
-        public Task<IEnumerable<ChartAccount>> GetFilterPlansAsync(int clientId, Func<ChartAccount, bool> func)
+        public async Task<ChartAccount> GetFilterbyCodeAsync(int clientId, string code)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(_repository.GetItemByCode(clientId, code) ?? new());
+        }
+
+        public async Task<IEnumerable<ChartAccount>> GetItemsbyNameAsync(int clientId, string name)
+        {
+            return await Task.FromResult(_repository.GetItemsByName(clientId, name));
         }
     }
 }

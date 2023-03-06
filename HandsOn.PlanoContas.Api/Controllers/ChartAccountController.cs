@@ -32,8 +32,15 @@ public class ChartAccountController : BaseApiController
         try
         {
             int cliId = GetClientId();
-            var resp = await service.GetItemsAsync(cliId);
-            return Ok(resp);
+            string nome = GetQueryValue("nome");
+            string codigo = GetQueryValue("codigo");
+            if(nome != null && nome.Length > 3)
+                return Ok(await service.GetItemsbyNameAsync(cliId, nome));
+            else if(codigo != null && codigo.Length > 0)
+                return Ok(await service.GetItembyCodeAsync(cliId, codigo));
+            else
+                return Ok(await service.GetItemsAsync(cliId));
+
         }
         catch (Exception ex)
         {
@@ -52,7 +59,7 @@ public class ChartAccountController : BaseApiController
         try
         {
             int cliId = GetClientId();
-            var resp = await service.GetItemsFilterAsync(cliId, x => x.Code == id);
+            var resp = await service.GetItembyCodeAsync(cliId, id);
             return Ok(resp);
         }
         catch (Exception ex)

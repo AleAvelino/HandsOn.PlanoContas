@@ -26,17 +26,41 @@ namespace HandsOn.PlanoContas.Infrastructure.Data.Repositories
                 .ToList();
         }
 
-        public IEnumerable<ChartAccount> GetItemByCode(int clientId, string code)
+        public ChartAccount? GetItemByCode(int clientId, string code)
         {
             return context.ChartAccounts
                 .Where(x => x.ClientId == clientId && x.Code == code)
-                .ToList();
+                .FirstOrDefault();
         }
 
         public IEnumerable<ChartAccount> GetParentList(int clientId, string code)
         {
             return context.ChartAccounts
                 .Where(x => x.ClientId == clientId && x.ParentAccount == code)
+                .ToList();
+
+        }
+
+        public void Create(int clientId, ChartAccount item)
+        {
+            item.ClientId = clientId;
+            context.ChartAccounts.Add(item);
+            context.SaveChanges();
+        }
+        public void Delete(int clientId,  string code)
+        {
+            var item = GetItemByCode(clientId, code);
+            if (item == null)
+                throw new Exception("Item não existe");
+
+            context.ChartAccounts.Remove(item);
+            context.SaveChanges();
+        }
+
+        public IEnumerable<ChartAccount> GetItemsByName(int clientId, string name)
+        {
+            return context.ChartAccounts
+                .Where(x => x.ClientId == clientId &&  x.Name.Contains(name))
                 .ToList();
 
         }

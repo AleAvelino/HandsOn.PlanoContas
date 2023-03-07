@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using HandsOn.PlanoContas.Core.Enums;
+using HandsOn.PlanoContas.Core.Helpers;
 using HandsOn.PlanoContas.Core.Interfaces;
 
 namespace HandsOn.PlanoContas.Core.Entities
@@ -28,6 +29,9 @@ namespace HandsOn.PlanoContas.Core.Entities
 
         public string ParentAccount { get; set; } = string.Empty;
 
+        [NotMapped]
+        public string CodeComputed { get => Numbers.ComputeCode(Code); }
+
         public ChartAccount()
         {
 
@@ -53,6 +57,5 @@ namespace HandsOn.PlanoContas.Core.Entities
             ParentAccount = parent.Trim() ?? code.Trim();
             ClientId = clientId;
         }
-
     }
 }

@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using HandsOn.PlanoContas.Core.DTOs;
-
-namespace HandsOn.PlanoContas.Core.Interfaces
+namespace HandsOn.PlanoContas.Core.Enums
 {
-    public interface IChartAccountService
+    public enum ESearchOrder
     {
+        DEFAULT,
+        CODE,
+        NAME,
+        TYPE
     }
 }

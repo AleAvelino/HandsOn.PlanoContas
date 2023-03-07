@@ -5,11 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 using HandsOn.PlanoContas.Core.Entities;
+using HandsOn.PlanoContas.Core.Enums;
 using HandsOn.PlanoContas.Core.DTOs;
 using HandsOn.PlanoContas.Core.Handlers;
 using HandsOn.PlanoContas.Core.Interfaces;
 using HandsOn.PlanoContas.Core.Validators;
-
+using HandsOn.PlanoContas.Core.Helpers;
 
 namespace HandsOn.PlanoContas.Core.Services
 {
@@ -32,7 +33,6 @@ namespace HandsOn.PlanoContas.Core.Services
 
         public async Task<OperationResultDTO> AddPlanAsync(int clientId, ChartAccountDTO chartAccountDTO)
         {
-            ValidateItem(chartAccountDTO);
             var item = MapHandler.GetChartAccount(clientId, chartAccountDTO);
             return await Task.FromResult(_commandService.AddPlanAsync(clientId, item));
         }
@@ -42,41 +42,26 @@ namespace HandsOn.PlanoContas.Core.Services
             return await Task.FromResult(_commandService.RemovePlanAsync(clientId, code));
         }
 
-        public void ValidateItem(ChartAccountDTO item)
-        {
-            if (item == null)
-                throw new Exception("Item deve ser preenchido");
-            if (item.Codigo.Trim().Length < 1)
-                throw new Exception("Item deve ter código");
-            if (String.IsNullOrEmpty(item.Nome))
-                throw new Exception("Item deve ter nome");
-            if (String.IsNullOrEmpty(item.Tipo))
-                throw new Exception("Item deve possuir um tipo");
 
-        }
-
-        public async Task<IEnumerable<ChartAccountDTO>> GetItemsAsync(int clientId)
+        public async Task<IEnumerable<ChartAccountDTO>> GetItemsAsync(
+            int clientId, 
+            string search = "", 
+            ESearchType searchType = ESearchType.ALL, 
+            ESearchOrder order = ESearchOrder.CODE, 
+            bool searchOrderDesc = false)
         {
-            var items = await _searchService
-                .GetAllPlansAsync(clientId);
+            IEnumerable<ChartAccount> items =
+                await _searchService.GetItemsAsync(clientId, search, searchType, order, searchOrderDesc);
+
             return items
                 .Select(i => MapHandler.GetDTO(i))
-                .ToList();
-                
+                .ToList();                
         }
 
-        public async Task<IEnumerable<ChartAccountDTO>> GetItemsbyNameAsync(int clientId, string name)
+        public async Task<ChartAccount> GetItembyCodeAsync(int clientId, string code)
         {
-            var lst = await _searchService.GetItemsbyNameAsync(clientId, name);
-            return lst
-                .Select(x => MapHandler.GetDTO(x))
-                .ToList();
-        }
-
-        public async Task<ChartAccountDTO> GetItembyCodeAsync(int clientId, string code)
-        {
-            var item = await _searchService.GetFilterbyCodeAsync(clientId, code);
-            return MapHandler.GetDTO(item);
+            var item =  await _searchService.GetItemsAsync(clientId, code, ESearchType.CODE);
+            return item.First();
         }
 
 

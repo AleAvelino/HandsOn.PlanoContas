@@ -68,7 +68,7 @@ namespace HandsOn.PlanoContas.Core.Handlers
             var parentsLst = GetItemsbyParent(parent);
             if (!parentsLst.Any()) return code;
             var tmp = parentsLst
-                .Select(x => new { x.Code, Order = int.Parse(x.Code.Replace(".", "")) })
+                .Select(x => new { x.Code, Order = x.CodeComputed })
                 .ToArray();          
             var max = tmp.Max(m => m.Order);
             return tmp.First(x => x.Order == max).Code;
@@ -146,7 +146,7 @@ namespace HandsOn.PlanoContas.Core.Handlers
             int[] levels = GetLevelsParseInt(code);
             string nextLevel = $"{levels[0]}";
 
-            for (int i = 0; i < destLevel; i++)
+            for (int i = 1; i < destLevel; i++)
             {
                 nextLevel = string.Concat(nextLevel, ".", levels[i]);
             }

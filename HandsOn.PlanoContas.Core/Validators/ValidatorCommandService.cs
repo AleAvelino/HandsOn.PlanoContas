@@ -1,4 +1,5 @@
-﻿using HandsOn.PlanoContas.Core.Entities;
+﻿using HandsOn.PlanoContas.Core.DTOs;
+using HandsOn.PlanoContas.Core.Entities;
 using HandsOn.PlanoContas.Core.Interfaces;
 
 namespace HandsOn.PlanoContas.Core.Validators
@@ -22,12 +23,19 @@ namespace HandsOn.PlanoContas.Core.Validators
             _items.AddRange(lst);
         }
 
-        public bool CreateItemValidation(ChartAccount item)
+        public void CreateItemValidation(ChartAccount item)
         {
-            return ParentCanHaveChildren(item)
-                && !CodeAlreadyExists(item)
-                && ChildrenMustBeSameParentType(item)
-                && CodeCanBeGreaterThanNext(item);
+            if (!ParentCanHaveChildren(item))
+                throw new Exception(MessageDTO.COMMAND_ERROR_VALIDATE_PARENT);
+
+            if(CodeAlreadyExists(item))
+                throw new Exception(MessageDTO.COMMAND_ERROR_VALIDATE_CODE_REPEAT);
+
+            if (!ChildrenMustBeSameParentType(item))
+                throw new Exception(MessageDTO.COMMAND_ERROR_VALIDATE_PARENT_TYPE);
+
+            if(!CodeCanBeGreaterThanNext(item))
+                throw new Exception(MessageDTO.COMMAND_ERROR_VALIDATE_CODE);
         }
 
 
@@ -61,14 +69,15 @@ namespace HandsOn.PlanoContas.Core.Validators
                 .OrderByDescending(o => o.Code)
                 .ToList();
             return sisters == null
-                || Math.Abs(string.Compare(item.Code, sisters.Max(x => x.Code), comparisonType: StringComparison.OrdinalIgnoreCase)) > 0;
+                || Math.Abs(string.Compare(item.CodeComputed, sisters.Max(x => x.CodeComputed), comparisonType: StringComparison.OrdinalIgnoreCase)) > 0;
         }
 
 
 
-        public bool DeleteItemValidation(int clientId, string code)
+        public void DeleteItemValidation(int clientId, string code)
         {
-            return _items.Any(x => x.ClientId == clientId && x.Code == code);
+            if(!_items.Any(x => x.ClientId == clientId && x.Code == code))
+                throw new Exception(MessageDTO.COMMAND_ERROR_VALIDATE_DELETE);
         }
 
 

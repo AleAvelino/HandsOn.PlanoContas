@@ -16,7 +16,7 @@ namespace HandsOn.PlanoContas.Core.Services
 
         public async Task<NextCodeResponseDTO> GetNextCode(int clientId, string parentCode)
         {
-            var lst = await _searchService.GetAllPlansAsync(clientId);
+            var lst = await _searchService.GetItemsAsync(clientId);
             NextCodeGeneratorHandler generator = new(lst);
 
             var newCode = generator.Generate(parentCode);

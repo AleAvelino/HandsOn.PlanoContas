@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
 using HandsOn.PlanoContas.Core.DTOs;
+using HandsOn.PlanoContas.Core.Enums;
 using HandsOn.PlanoContas.Core.Interfaces;
 using HandsOn.PlanoContas.Core.Services;
 
@@ -32,14 +33,36 @@ public class ChartAccountController : BaseApiController
         try
         {
             int cliId = GetClientId();
-            string nome = GetQueryValue("nome");
-            string codigo = GetQueryValue("codigo");
-            if(nome != null && nome.Length > 3)
-                return Ok(await service.GetItemsbyNameAsync(cliId, nome));
-            else if(codigo != null && codigo.Length > 0)
-                return Ok(await service.GetItembyCodeAsync(cliId, codigo));
+            string search = GetQueryValue("search");
+            string stype = GetQueryValue("type");
+            string order = GetQueryValue("order");
+            bool desc = order.ToLower().Contains("_desc");
+
+            ESearchType searchType = stype.ToLower() switch
+            {
+                "code" => ESearchType.CODE,
+                "name" => ESearchType.NAME,
+                "type" => ESearchType.TYPE,
+                _ => ESearchType.ALL
+            };
+
+            order = order
+                .ToLower()
+                .Replace("_desc", "");
+            ESearchOrder searchOrder = order.ToLower() switch
+            {
+                "code" => ESearchOrder.CODE,
+                "name" => ESearchOrder.NAME,
+                "type" => ESearchOrder.TYPE,
+                "default" => ESearchOrder.DEFAULT,
+                _ => ESearchOrder.CODE,
+            };
+
+
+            if (searchType == ESearchType.CODE)
+                return Ok(await service.GetItembyCodeAsync(cliId, search));
             else
-                return Ok(await service.GetItemsAsync(cliId));
+                return Ok(await service.GetItemsAsync(cliId, search, searchType, searchOrder, desc));
 
         }
         catch (Exception ex)
@@ -67,6 +90,8 @@ public class ChartAccountController : BaseApiController
             return BadRequest(ex.Message);
         }
     }
+
+
 
     /// <summary>
     /// Criação de um novo item no Plano de Contas

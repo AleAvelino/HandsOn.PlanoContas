@@ -12,10 +12,6 @@ namespace HandsOn.PlanoContas.Core.Services
     internal class ChartAccountCommandService : IChartAccountCommandService
     {
 
-        private const string MSG_FAIL = "O Plano não pode ser criado, Por favor verifique os dados e tente novamente";
-        private const string MSG_SUCCESS = "Dados Salvos com sucesso!";
-
-
         private readonly IChartAccountRepository _repository;
         private readonly IValidatorCommand _validator;
         public ChartAccountCommandService(
@@ -30,46 +26,69 @@ namespace HandsOn.PlanoContas.Core.Services
         {
 
             OperationResultDTO operationResult;
+            string msgValidate = ValidateItemToAdd(clientId, item);
 
-            if (ValidateItemToAdd(clientId, item))
+            if (string.IsNullOrEmpty(msgValidate))
             {
                _repository.Create(clientId, item);
-                operationResult = new(false, MSG_SUCCESS);
+                operationResult = new(true, MessageDTO.COMMAND_SUCCESS);
             }
             else
             {
-                operationResult = new(false, MSG_FAIL);
+                operationResult = new(false, msgValidate);
             }
+
+
             return operationResult;
         }
 
         public OperationResultDTO RemovePlanAsync(int clientId, string code)
         {
             OperationResultDTO operationResult;
-            if (ValidateItemToRemove(clientId, code))
+
+            string msgValidate = ValidateItemToRemove(clientId, code);
+
+            if (string.IsNullOrEmpty(msgValidate))
             {
                 _repository.Delete(clientId, code);
-                operationResult = new(false, MSG_SUCCESS);
+                operationResult = new(true, MessageDTO.COMMAND_SUCCESS);
             }
             else
             {
-                operationResult = new(false, MSG_FAIL);
+                operationResult = new(false, msgValidate);
             }
             return operationResult;
         }
 
-        private bool ValidateItemToAdd(int clientId, ChartAccount item)
+        private string ValidateItemToAdd(int clientId, ChartAccount item)
         {
+            string msgValidate = string.Empty;
             var lst = _repository.GetAll(clientId);
             _validator.SetItems(lst);
-            return _validator.CreateItemValidation(item);
+            try
+            {
+                _validator.CreateItemValidation(item);
+            }catch(Exception ex)
+            {
+                msgValidate = ex.Message;
+            }            
+            return msgValidate;
         }
 
-        private bool ValidateItemToRemove(int clientId, string code)
+        private string ValidateItemToRemove(int clientId, string code)
         {
+            string msgValidate = string.Empty;
             var lst = _repository.GetAll(clientId);
             _validator.SetItems(lst);
-            return _validator.DeleteItemValidation(clientId, code);
+            try
+            {
+                _validator.DeleteItemValidation(clientId, code);
+            }
+            catch (Exception ex)
+            {
+                msgValidate = ex.Message;
+            }
+            return msgValidate;
         }
 
 
